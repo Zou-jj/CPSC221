@@ -7,8 +7,6 @@
 
 #include "HSLAPixel.h"
 
-using namespace std;
-
 namespace cs221util {
   HSLAPixel::HSLAPixel() {
     s = 0;

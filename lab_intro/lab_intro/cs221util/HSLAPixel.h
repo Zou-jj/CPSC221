@@ -7,8 +7,6 @@
 #ifndef HSLAPIXEL_H
 #define HSLAPIXEL_H
 
-using namespace std;
-
 namespace cs221util {
   class HSLAPixel {
   public:
