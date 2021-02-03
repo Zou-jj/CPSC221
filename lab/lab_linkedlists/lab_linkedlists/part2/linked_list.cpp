@@ -60,7 +60,17 @@ std::vector<int> to_vector(Node* head) {
  */
 void delete_last_element(Node*& head){
   // ******** WRITE YOUR CODE HERE ********
-
+  Node * curr = head;
+  if (curr == NULL){
+    return;
+  } else if (curr -> next == NULL){
+    head = NULL;
+  } else {
+    while (curr -> next -> next != NULL){
+      curr = curr -> next;
+    }
+    curr -> next = NULL;
+  }
 }
 
 /**
@@ -74,7 +84,27 @@ void delete_last_element(Node*& head){
  */ 
 void remove(Node*& head, int oldKey) {
   // ******** WRITE YOUR CODE HERE ********
-
+  Node * curr = head;
+  if (curr == NULL){
+    return;
+  } else if (curr -> next == NULL){
+    if (curr -> key == oldKey){
+      head = NULL;
+    }
+  } else {
+    if (curr -> key == oldKey){
+      head = head -> next;
+    } else {
+      while (curr -> next != NULL){
+      if (curr -> next -> key == oldKey){
+        curr -> next = curr -> next -> next;
+        break;
+      }
+      curr = curr -> next;
+    }
+    }
+    
+  }
 }
 
 /**
@@ -88,7 +118,28 @@ void remove(Node*& head, int oldKey) {
  */
 void insert_after(Node* head, int oldKey, int newKey){
   // ******** WRITE YOUR CODE HERE ********
-
+  Node * curr = head;
+  if (curr == NULL){
+    return;
+  } else if (curr -> next == NULL){
+    if (curr -> key == oldKey){
+      Node * newNode = new Node();
+      newNode -> key = newKey;
+      newNode -> next = NULL;
+      curr -> next = newNode;
+    }
+  } else {
+    while (curr -> next != NULL){
+      if (curr -> key == oldKey){
+        Node * newNode = new Node();
+        newNode -> key = newKey;
+        newNode -> next = curr -> next;
+        curr -> next = newNode;
+        break;
+      }
+      curr = curr -> next;
+    }
+  }
 }
 
 /** 
@@ -103,6 +154,80 @@ void insert_after(Node* head, int oldKey, int newKey){
  */
 Node* interleave(Node* list1, Node* list2){
   // ******** WRITE YOUR CODE HERE ********
-  return NULL;  // ******** DELETE THIS LINE ********
+  bool isList1 = true;
+  Node * curr1 = list1;
+  Node * curr2 = list2;
+  Node * newHead = NULL;
 
+
+  if (list1 == NULL){
+    if (list2 == NULL){
+      return NULL;
+    } else {
+      newHead = new Node();
+      newHead -> key = list2 -> key;
+      curr2 = curr2 -> next;
+      isList1 = !isList1;
+    }
+  } else {
+    newHead = new Node();
+    newHead -> key = list1 -> key;
+    curr1 = curr1 -> next;
+    isList1 = !isList1;
+  }
+
+  Node * curr = newHead;
+
+  // Node * test;
+
+  // test = list1;
+  // while(test != NULL){
+  //   printf("%d\n", test -> key);
+  //   test = test -> next;
+  // }
+  // printf("\n");
+
+  // test = list2;
+  // while(test != NULL){
+  //   printf("%d\n", test -> key);
+  //   test = test -> next;
+  // }
+  // printf("\n");
+
+  // test = curr;
+  // while(test != NULL){
+  //   printf("%d\n", test -> key);
+  //   test = test -> next;
+  // }
+  // printf("\n");
+
+  while (curr1 != NULL || curr2 != NULL){
+    if (curr1 == NULL){
+      Node * newNode = new Node();
+      newNode -> key = curr2 -> key;
+      curr -> next = newNode;
+      curr2 = curr2 -> next;
+    } else if(curr2 == NULL){
+      Node * newNode = new Node();
+      newNode -> key = curr1 -> key;
+      curr -> next = newNode;
+      curr1 = curr1 -> next;
+    } else {
+      if (isList1){
+        Node * newNode = new Node();
+        newNode -> key = curr1 -> key;
+        curr -> next = newNode;
+        curr1 = curr1 -> next;
+      } else {
+        Node * newNode = new Node();
+        newNode -> key = curr2 -> key;
+        curr -> next = newNode;
+        curr2 = curr2 -> next;
+      }
+    }
+    curr = curr -> next;
+    isList1 = !isList1;
+  }
+
+  return newHead;
 }
