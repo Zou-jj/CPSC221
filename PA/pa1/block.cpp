@@ -11,17 +11,19 @@ int Block::width() const {
 }
 
 void Block::render(PNG &im, int x) const {
-  for (int widthIndex = 0; widthIndex < width(); widthIndex++){
-    for (int heightIndex = 0; heightIndex < im.height(); heightIndex++){
-      *im.getPixel(x+widthIndex, heightIndex) = data[x+widthIndex][heightIndex];
+  for (unsigned int heightIndex = 0; heightIndex < im.height(); heightIndex++){
+    for (int widthIndex = 0; widthIndex < width(); widthIndex++){
+      *(im.getPixel(x+widthIndex, heightIndex)) = data[heightIndex][widthIndex];
     }
   }
 }
 
 void Block::build(PNG &im, int x, int width) {
-  for (int widthIndex = 0; widthIndex < width; widthIndex++){
-    for (int heightIndex = 0; heightIndex < im.height(); heightIndex++){
-      data[x+widthIndex][heightIndex] = *im.getPixel(x+widthIndex, heightIndex);
+  data = vector<vector<HSLAPixel>>(width);
+  for (unsigned int heightIndex = 0; heightIndex < im.height(); heightIndex++){
+    data[heightIndex] = vector<HSLAPixel>(im.height());
+    for (int widthIndex = 0; widthIndex < width; widthIndex++){
+      data[heightIndex][widthIndex] = *(im.getPixel(x+widthIndex, heightIndex));
     }
   }
 }

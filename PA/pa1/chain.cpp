@@ -25,7 +25,15 @@ Chain::~Chain() {
  * @param ndata = The data to be inserted.
  */
 Chain::Node * Chain::insertAfter(Node * p, const Block &ndata) {
-  /* your code here */
+  Node *newNode = new Node(ndata);
+  newNode -> prev = p;
+  if (p != NULL){
+    p -> next = newNode;
+  } else {
+    head_ = newNode;
+  }
+  length_++;
+  return newNode;
 }
 
 /**
@@ -43,7 +51,13 @@ void Chain::swap(Node *p, Node *q) {
  * current Chain class.
  */
 void Chain::clear() {
-  /* your code here */
+  Node* temp = head_;
+  head_ = NULL;
+  while (temp -> next != NULL){
+    temp = temp -> next;
+    free(temp -> prev);
+  }
+  free(temp);
 }
 
 /**
@@ -54,7 +68,13 @@ void Chain::clear() {
  * constructor and the assignment operator for Chains.
  */
 void Chain::copy(Chain const &other) {
-  /* your code here */
+  // if (other.head_ != NULL){
+  //   head_ = new Node();
+  //   head_ -> prev = NULL;
+  //   Block newData;
+  //   newData.build(imIn , i*w, w);
+  // }
+  
 }
 
 /* Modifies the current chain: 
