@@ -10,7 +10,7 @@
  * memory does not leak on destruction of a chain.
  */
 Chain::~Chain() {
-  /* your code here */
+  clear();
 }
 
 /**
@@ -43,7 +43,65 @@ Chain::Node * Chain::insertAfter(Node * p, const Block &ndata) {
  * Change the chain's head pointer if necessary.
  */
 void Chain::swap(Node *p, Node *q) {
-  /* your code here */
+  if (p != NULL && q != NULL && p != q){
+    Node *tempPPrev = p -> prev;
+    Node *tempPNext = p -> next;
+    Node *tempQPrev = q -> prev;
+    Node *tempQNext = q -> next;
+
+    if (p -> next == q){
+      p -> prev = q;
+      p -> next = q -> next;
+      q -> prev = tempPPrev;
+      q -> next = p;
+      if (tempPPrev == NULL){
+        head_ = q;
+      } else {
+        tempPPrev -> next = q;
+      }
+      if (tempQNext == NULL){
+      } else {
+        tempQNext -> prev = p;
+      }
+    } else if (q -> next == p){
+      p -> prev = q -> prev;
+      p -> next = q;
+      q -> prev = p;
+      q -> next = tempPNext;
+      if (tempPNext == NULL){
+      } else {
+        tempPNext -> prev = q;
+      }
+      if (tempQPrev == NULL){
+        head_ = p;
+      } else {
+        tempQPrev -> next = p;
+      }
+    } else {
+      p -> prev = q -> prev;
+      p -> next = q -> next;
+      q -> prev = tempPPrev;
+      q -> next = tempPNext;
+      if (tempPPrev == NULL){
+        tempPNext -> prev = q;
+        head_ = q;
+      } else if (tempPNext == NULL){
+        tempPPrev -> next = q;
+      } else {
+        tempPNext -> prev = q;
+        tempPPrev -> next = q;
+      }
+      if (tempQPrev == NULL){
+        tempQNext -> prev = p;
+        head_ = p;
+      } else if (tempQNext == NULL){
+        tempQPrev -> next = p;
+      } else {
+        tempQNext -> prev = p;
+        tempQPrev -> next = p;
+      }
+    }
+  }
 }
 
 /**
@@ -51,13 +109,17 @@ void Chain::swap(Node *p, Node *q) {
  * current Chain class.
  */
 void Chain::clear() {
+  if (head_ == NULL){
+    return;
+  }
   Node* temp = head_;
-  head_ = NULL;
   while (temp -> next != NULL){
     temp = temp -> next;
-    free(temp -> prev);
+    delete temp -> prev;
   }
-  free(temp);
+  delete temp;
+  temp = NULL;
+  head_ = NULL;
 }
 
 /**
@@ -68,13 +130,18 @@ void Chain::clear() {
  * constructor and the assignment operator for Chains.
  */
 void Chain::copy(Chain const &other) {
-  // if (other.head_ != NULL){
-  //   head_ = new Node();
-  //   head_ -> prev = NULL;
-  //   Block newData;
-  //   newData.build(imIn , i*w, w);
-  // }
-  
+  if (other.head_ != NULL){
+    head_ = new Node(other.head_->data);
+    length_ = other.length_;
+    Node* curr = head_;
+    Node* currOther = other.head_;
+    while(currOther->next != NULL) {
+      curr->next = new Node(currOther->next->data);
+      curr->next->prev = curr;
+      curr = curr->next;
+      currOther = currOther->next;
+    }
+  }
 }
 
 /* Modifies the current chain: 
@@ -94,5 +161,72 @@ void Chain::copy(Chain const &other) {
  *    then repeat to unscramble the chain/image.
  */
 void Chain::unscramble() {
-  /* your code here */
+  Node *curr = head_;
+  Node *comp = NULL;
+  int count;
+  double minDisHead = 1.0;
+  if (curr == NULL){
+    return;
+  } else {
+    count = 1;
+  }
+  if (curr -> next != NULL){
+    comp = curr -> next;
+    count++;
+  } else {
+    return;
+  }
+  while (comp -> next != NULL){
+    if (comp -> data.distanceTo(curr -> data) < minDisHead){
+      minDisHead = comp -> data.distanceTo(curr -> data);
+    }
+    count++;
+    comp = comp -> next;
+  }
+  double *minDis = (double *) malloc(count * sizeof(double));
+  minDis[0] = minDisHead;
+  double maxDis = minDisHead;
+  int maxIndex = 0;
+  Node *newHead = head_;
+
+  Node *tempHead = head_ -> next;
+  for (int i = 1; i < count ; i++){
+    Node *tempCurr = tempHead;
+    Node *tempComp = head_;
+    double minDisTemp = 1.0;
+    for (int j = 0; j < count; j++){
+      if (i == j){
+        continue;
+      }
+      if (tempCurr -> data.distanceTo(tempComp -> data) < minDisTemp){
+        minDisTemp = tempComp -> data.distanceTo(tempCurr -> data);
+      }
+      tempComp = tempComp -> next;
+    }
+    minDis[i] = minDisTemp;
+    if (minDisTemp > maxDis){
+      maxDis = minDisTemp;
+      maxIndex = i;
+      newHead = tempHead;
+    }
+    tempHead = tempHead -> next;
+  }
+  swap(head_, newHead);
+  free(minDis);
+
+  curr = head_;
+  while (curr != NULL) {
+    comp = curr -> next;
+    Node *nextNode;
+    double minDisNext = 1;
+    while (comp != NULL){
+      if((curr->data).distanceTo(comp->data) < minDisNext) {
+        nextNode = comp;
+        minDisNext = (curr -> data).distanceTo(comp -> data);
+      }
+      comp = comp -> next;
+    }
+    swap(curr->next, nextNode);
+    curr = curr->next;
+  }
 }
