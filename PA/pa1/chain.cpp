@@ -161,60 +161,46 @@ void Chain::copy(Chain const &other) {
  *    then repeat to unscramble the chain/image.
  */
 void Chain::unscramble() {
-  Node *curr = head_;
-  Node *comp = NULL;
-  int count;
-  double minDisHead = 1.0;
-  if (curr == NULL){
-    return;
-  } else {
-    count = 1;
-  }
-  if (curr -> next != NULL){
-    comp = curr -> next;
-    count++;
-  } else {
-    return;
-  }
-  while (comp -> next != NULL){
-    if (comp -> data.distanceTo(curr -> data) < minDisHead){
-      minDisHead = comp -> data.distanceTo(curr -> data);
-    }
-    count++;
-    comp = comp -> next;
-  }
-  double *minDis = (double *) malloc(count * sizeof(double));
-  minDis[0] = minDisHead;
-  double maxDis = minDisHead;
-  int maxIndex = 0;
+  double *minDis = (double *) malloc(length_ * sizeof(double));
+  double maxDis = 0;
   Node *newHead = head_;
 
-  Node *tempHead = head_ -> next;
-  for (int i = 1; i < count ; i++){
+  Node *tempHead = head_;
+  for (int i = 0; i < length_ ; i++){
     Node *tempCurr = tempHead;
     Node *tempComp = head_;
     double minDisTemp = 1.0;
-    for (int j = 0; j < count; j++){
-      if (i == j){
-        continue;
-      }
-      if (tempCurr -> data.distanceTo(tempComp -> data) < minDisTemp){
+    for (int j = 0; j < length_; j++){
+      // if (i == j){
+      //   continue;
+      // }
+      // printf("%d - %d : %f\n", i, j, tempComp -> data.distanceTo(tempCurr -> data));
+      if (tempComp -> data.distanceTo(tempCurr -> data) < minDisTemp){
         minDisTemp = tempComp -> data.distanceTo(tempCurr -> data);
+        // printf("new min : %f\n", minDisTemp);
       }
       tempComp = tempComp -> next;
     }
     minDis[i] = minDisTemp;
+    // printf("curr : %d\n", i);
+    // printf("curr : %f\n", minDisTemp);
+    // printf("curr : %f\n", maxDis);
     if (minDisTemp > maxDis){
       maxDis = minDisTemp;
-      maxIndex = i;
       newHead = tempHead;
     }
     tempHead = tempHead -> next;
   }
   swap(head_, newHead);
+
+  // for (int index = 0; index < length_; index++){
+  //   printf("%f\n", minDis[index]);
+  // }
+
   free(minDis);
 
-  curr = head_;
+  Node *curr = head_;
+  Node *comp = NULL;
   while (curr != NULL) {
     comp = curr -> next;
     Node *nextNode;
