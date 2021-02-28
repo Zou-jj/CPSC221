@@ -5,6 +5,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -48,9 +49,24 @@ template <typename T>
 void BinaryTree<T>::printLeftToRight() const
 {
     // Your code here
-
+    printLeftToRight(root);
     // Do not remove this line - used for correct print output
     cout << endl;
+}
+
+/**
+ * Private helper function for the public printLeftToRight function, with an additional
+ * Node* parameter to allow for recursive calls. 
+ * @param subRoot
+ */
+template <typename T>
+void BinaryTree<T>::printLeftToRight(const Node* subRoot) const
+{
+    if (subRoot != NULL){
+        printLeftToRight(subRoot->left);
+        cout << to_string(subRoot->elem) << " ";
+        printLeftToRight(subRoot->right);
+    }
 }
 
 /**
@@ -61,7 +77,25 @@ template <typename T>
 void BinaryTree<T>::mirror()
 {
     // Your code here
+    mirror(root);
+}
 
+/**
+ * Private helper function for the public mirror function, with an additional
+ * Node* parameter to allow for recursive calls. 
+ * @param subRoot
+ */
+template <typename T>
+void BinaryTree<T>::mirror(Node* subRoot) const
+{
+    if (subRoot != NULL){
+        Node* temp;
+        temp = subRoot->left;
+        subRoot->left = subRoot->right;
+        subRoot->right = temp;
+        mirror(subRoot->left);
+        mirror(subRoot->right);
+    }
 }
 
 /**
@@ -74,7 +108,44 @@ template <typename T>
 void BinaryTree<T>::printPaths() const
 {
     // Your code here
+    if (root != NULL){
+        int heightIndex = 0;
+        // int height = height(root);
+        std::string pathList[10] = {"\0"};
+        printPaths(root, pathList, heightIndex);
+    }
+}
 
+/**
+ * Private helper function for the public printPaths function, with an additional
+ * Node* parameter to allow for recursive calls. 
+ * @param subRoot
+ */
+template <typename T>
+void BinaryTree<T>::printPaths(const Node* subRoot, std::string pathList[], int heightIndex) const
+{
+    if (subRoot != NULL){
+        pathList[heightIndex] = to_string(subRoot->elem);
+        if (subRoot->left != NULL && subRoot->right != NULL){
+            heightIndex++;
+            printPaths(subRoot->left, pathList, heightIndex);
+            printPaths(subRoot->right, pathList, heightIndex);
+        } else if (subRoot->left != NULL){
+            heightIndex++;
+            printPaths(subRoot->left, pathList, heightIndex);
+        } else if (subRoot->right != NULL){
+            heightIndex++;
+            printPaths(subRoot->right, pathList, heightIndex);
+        } else {
+            int index = 0;
+            cout << "Path: ";
+            for (; index <= heightIndex; index++){
+                cout << pathList[index] << " ";
+            }
+            cout << "\n";
+            pathList[index-1] = "\0";
+        }
+    }
 }
 
 /**
@@ -89,7 +160,24 @@ template <typename T>
 int BinaryTree<T>::sumDistances() const
 {
     // Your code here
-    return 0;
+    return sumDistances(root, 0);
+}
+
+/**
+ * Private helper function for the public sumDistances function, with an additional
+ * Node* parameter to allow for recursive calls. 
+ * @param subRoot
+ * @return The sum of distances of leaves in the subtree.
+ */
+template <typename T>
+int BinaryTree<T>::sumDistances(const Node* subRoot, int heightIndex) const
+{
+    // Base case
+    if (subRoot == NULL)
+        return 0;
+
+    // Recursive definition
+    return (heightIndex + sumDistances(subRoot->left, heightIndex + 1) + sumDistances(subRoot->right, heightIndex + 1));
 }
 
 /**

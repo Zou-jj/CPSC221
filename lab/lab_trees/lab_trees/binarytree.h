@@ -152,6 +152,35 @@ class BinaryTree
      */
 
     /**
+    * Private helper function for the public printLeftToRight function, with an additional
+    * Node* parameter to allow for recursive calls. 
+    * @param subRoot
+    */
+    void printLeftToRight(const Node* subRoot) const;
+
+    /**
+    * Private helper function for the public mirror function, with an additional
+    * Node* parameter to allow for recursive calls. 
+    * @param subRoot
+    */
+    void mirror(Node* subRoot) const;
+
+    /**
+    * Private helper function for the public printPaths function, with an additional
+    * Node* parameter to allow for recursive calls. 
+    * @param subRoot
+    */
+    void printPaths(const Node* subRoot, std::string pathList[], int heightIndex) const;
+
+    /**
+    * Private helper function for the public sumDistances function, with an additional
+    * Node* parameter to allow for recursive calls. 
+    * @param subRoot
+    * @return The sum of distances of leaves in the subtree.
+    */
+    int sumDistances(const Node* subRoot, int heightIndex) const;
+
+    /**
      * Private helper function for the public insert function.
      * @param node The current node in the recursion.
      * @param elem The element to insert.
