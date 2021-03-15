@@ -41,6 +41,7 @@ void CommonWords::init_file_word_maps(const vector<string>& filenames)
 {
     // make the length of file_word_maps the same as the length of filenames
     file_word_maps.resize(filenames.size());
+    // cout << file_word_maps.size() << "hello";
 
     // go through all files
     for (size_t i = 0; i < filenames.size(); i++) {
@@ -49,15 +50,32 @@ void CommonWords::init_file_word_maps(const vector<string>& filenames)
 
         // go through all the words in the file
         /* Your code goes here! */
-
-
+        map<string, unsigned int> freq;
+        for (auto word : words){
+            auto lookup = freq.find(word);
+            if (lookup != freq.end()) {
+                lookup->second++;
+            } else {
+                freq[word] = 1;
+            }
+        }
+        file_word_maps[i] = freq;
     }
 }
 
 void CommonWords::init_common()
 {
     /* Your code goes here!  */
-
+    for (size_t i = 0; i < file_word_maps.size(); i++) {
+        for (auto freqMap : file_word_maps[i]){
+            auto lookup = common.find(freqMap.first);
+            if (lookup != common.end()) {
+                lookup->second++;
+            } else {
+                common[freqMap.first] = 1;
+            }
+        }
+    }
 }
 
 /**
@@ -69,7 +87,20 @@ vector<string> CommonWords::get_common_words(unsigned int n) const
 {
     vector<string> out;
     /* Your code goes here! */
-
+    for (auto commonMap : common){
+        if (commonMap.second == file_word_maps.size()){
+            bool flag = true;
+            for (size_t i = 0; i < file_word_maps.size(); i++) {
+                auto lookup = file_word_maps[i].find(commonMap.first);
+                if (lookup->second < n) {
+                    flag = false;
+                }
+            }
+            if (flag){
+                out.push_back(commonMap.first);
+            }
+        }
+    }
     return out;
 }
 

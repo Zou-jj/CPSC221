@@ -1,37 +1,33 @@
 #include <cmath>
 #include <iostream>
+#include <vector>
+#include <utility>
 
-using namespace std;
+#include <iterator>
+#include <sstream>
+#include <fstream>
+#include <iostream>
+#include <cstring>
+#include <algorithm>
 
-struct Node { 
-    const int data; 
-    Node* next; 
-    Node(int d) : data(d), next(NULL) {} 
-};
+using std::string;
+// using std::map;
+using std::vector;
+using std::ifstream;
+using std::istream;
+using std::istream_iterator;
+using std::stringstream;
 
-Node* modifyLinkedList(Node* head){
-    //Parameter: head (head node of a singlely linked list)
-    Node* tempHead = head -> next -> next;
-    head -> next -> next -> next -> next = head;
-    head -> next -> next = NULL;
-    head = tempHead;
-    return head; 
-}
+using std::cout;
+using std::endl;
+
+string word1 = "hello1";
+string word2 = "hello2";
 
 int main() {
-    Node *head = new Node(0);
-    head -> next = new Node(1);
-    head -> next -> next = new Node(2);
-    head -> next -> next -> next = new Node(3);
-    Node *temp = head;
-    while(temp != NULL){
-        printf("%d", temp -> data);
-        printf("\n");
-        temp = temp -> next;
-    }
-    Node *temp1 = modifyLinkedList(head);
-    while(temp1 != NULL){
-        printf("%d", temp1 -> data);
-        temp1 = temp1 -> next;
-    }
+    string word1C = word1;
+    string word2C = word2;
+    std::transform(word1.begin(), word1.end(), word1C.begin(), ::toupper);
+    cout << word1 << word1C << word2C;
+    return false;
 }
